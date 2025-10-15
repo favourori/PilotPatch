@@ -22,6 +22,8 @@ export const vulnerabilities = pgTable("vulnerabilities", {
   
   // Enrichment fields
   applicationOwner: text("application_owner"),
+  vpOwner: text("vp_owner"), // VP who owns the application
+  vpPoc: text("vp_poc"), // VP Point of Contact for remediation
   githubUrl: text("github_url"),
   ticketUrl: text("ticket_url"),
   attackVector: text("attack_vector"), // "NETWORK", "ADJACENT", "LOCAL", "PHYSICAL"
@@ -53,6 +55,8 @@ export const assets = pgTable("assets", {
   businessCriticality: text("business_criticality").notNull(), // "CRITICAL", "HIGH", "MEDIUM", "LOW"
   environment: text("environment").notNull(), // "PRODUCTION", "STAGING", "DEVELOPMENT"
   owner: text("owner"),
+  vpOwner: text("vp_owner"), // VP who owns the asset/application
+  vpPoc: text("vp_poc"), // VP Point of Contact for remediation
   ipAddress: text("ip_address"),
   vulnerabilityCount: integer("vulnerability_count").notNull().default(0),
   criticalVulnCount: integer("critical_vuln_count").notNull().default(0),
