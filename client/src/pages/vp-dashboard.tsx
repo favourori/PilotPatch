@@ -301,7 +301,7 @@ export default function VPDashboardPage() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
                                 <code className="text-xs font-mono">{vuln.cveId}</code>
-                                <FindingTypeBadge findingType={vuln.findingType} />
+                                <FindingTypeBadge findingType={vuln.findingType as "CODE_VULNERABILITY" | "SECRET_EXPOSURE" | "CLOUD_SECURITY"} />
                               </div>
                               <p className="text-sm font-medium truncate">{vuln.title}</p>
                             </div>
