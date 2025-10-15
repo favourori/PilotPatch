@@ -92,6 +92,8 @@ export class MemStorage implements IStorage {
       this.assets.set(id, {
         ...asset,
         id,
+        owner: asset.owner || null,
+        ipAddress: asset.ipAddress || null,
         vulnerabilityCount: 0,
         criticalVulnCount: 0,
         highVulnCount: 0,
@@ -136,10 +138,15 @@ export class MemStorage implements IStorage {
 
     integrationData.forEach((integration) => {
       const id = randomUUID();
-      const lastSyncAt = integration.status === "CONNECTED" ? new Date(Date.now() - Math.random() * 3600000) : undefined;
+      const lastSyncAt = integration.status === "CONNECTED" ? new Date(Date.now() - Math.random() * 3600000) : null;
       this.integrations.set(id, {
         ...integration,
         id,
+        apiKey: integration.apiKey || null,
+        apiUrl: integration.apiUrl || null,
+        syncFrequency: integration.syncFrequency || null,
+        config: integration.config || null,
+        enabled: integration.enabled ?? true,
         lastSyncAt,
         createdAt: new Date(),
       });
@@ -264,6 +271,8 @@ export class MemStorage implements IStorage {
       this.vulnerabilities.set(id, {
         ...vuln,
         id,
+        affectedPackage: vuln.affectedPackage || null,
+        remediationSteps: vuln.remediationSteps || null,
         detectedAt: new Date(Date.now() - Math.random() * 7 * 24 * 3600000),
         updatedAt: new Date(),
       });
@@ -304,6 +313,8 @@ export class MemStorage implements IStorage {
     const vulnerability: Vulnerability = {
       ...vuln,
       id,
+      affectedPackage: vuln.affectedPackage || null,
+      remediationSteps: vuln.remediationSteps || null,
       detectedAt: new Date(),
       updatedAt: new Date(),
     };
@@ -337,6 +348,8 @@ export class MemStorage implements IStorage {
     const newAsset: Asset = {
       ...asset,
       id,
+      owner: asset.owner || null,
+      ipAddress: asset.ipAddress || null,
       vulnerabilityCount: 0,
       criticalVulnCount: 0,
       highVulnCount: 0,
@@ -369,6 +382,12 @@ export class MemStorage implements IStorage {
     const newIntegration: Integration = {
       ...integration,
       id,
+      apiKey: integration.apiKey || null,
+      apiUrl: integration.apiUrl || null,
+      syncFrequency: integration.syncFrequency || null,
+      config: integration.config || null,
+      enabled: integration.enabled ?? true,
+      lastSyncAt: null,
       createdAt: new Date(),
     };
     this.integrations.set(id, newIntegration);
