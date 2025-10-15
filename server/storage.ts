@@ -7,6 +7,22 @@ import {
   type InsertIntegration,
   type DashboardStats,
   type VPDashboard,
+  type Comment,
+  type InsertComment,
+  type ActivityLog,
+  type InsertActivityLog,
+  type User,
+  type InsertUser,
+  type Notification,
+  type InsertNotification,
+  type WorkflowHistory,
+  type InsertWorkflowHistory,
+  type SavedView,
+  type InsertSavedView,
+  type ExportJob,
+  type InsertExportJob,
+  type WebhookConfig,
+  type InsertWebhookConfig,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -35,17 +51,74 @@ export interface IStorage {
   // VP Dashboard
   getVPList(): Promise<{ vpName: string; vpPoc: string }[]>;
   getVPDashboard(vpOwner: string): Promise<VPDashboard | undefined>;
+  
+  // Comments
+  getComments(vulnerabilityId: string): Promise<Comment[]>;
+  createComment(comment: InsertComment): Promise<Comment>;
+  
+  // Activity Logs
+  getActivityLogs(entityType: string, entityId: string): Promise<ActivityLog[]>;
+  createActivityLog(log: InsertActivityLog): Promise<ActivityLog>;
+  
+  // Users
+  getUsers(): Promise<User[]>;
+  getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, user: Partial<User>): Promise<User | undefined>;
+  
+  // Notifications
+  getNotifications(userId: string): Promise<Notification[]>;
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  markNotificationRead(id: string): Promise<void>;
+  
+  // Workflow History
+  getWorkflowHistory(vulnerabilityId: string): Promise<WorkflowHistory[]>;
+  createWorkflowHistory(history: InsertWorkflowHistory): Promise<WorkflowHistory>;
+  
+  // Saved Views
+  getSavedViews(vpOwner: string): Promise<SavedView[]>;
+  getSavedView(id: string): Promise<SavedView | undefined>;
+  createSavedView(view: InsertSavedView): Promise<SavedView>;
+  updateSavedView(id: string, view: Partial<SavedView>): Promise<SavedView | undefined>;
+  deleteSavedView(id: string): Promise<void>;
+  
+  // Export Jobs
+  getExportJobs(userId: string): Promise<ExportJob[]>;
+  createExportJob(job: InsertExportJob): Promise<ExportJob>;
+  updateExportJob(id: string, job: Partial<ExportJob>): Promise<ExportJob | undefined>;
+  
+  // Webhooks
+  getWebhooks(): Promise<WebhookConfig[]>;
+  createWebhook(webhook: InsertWebhookConfig): Promise<WebhookConfig>;
+  updateWebhook(id: string, webhook: Partial<WebhookConfig>): Promise<WebhookConfig | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private vulnerabilities: Map<string, Vulnerability>;
   private assets: Map<string, Asset>;
   private integrations: Map<string, Integration>;
+  private comments: Map<string, Comment>;
+  private activityLogs: Map<string, ActivityLog>;
+  private users: Map<string, User>;
+  private notifications: Map<string, Notification>;
+  private workflowHistory: Map<string, WorkflowHistory>;
+  private savedViews: Map<string, SavedView>;
+  private exportJobs: Map<string, ExportJob>;
+  private webhooks: Map<string, WebhookConfig>;
 
   constructor() {
     this.vulnerabilities = new Map();
     this.assets = new Map();
     this.integrations = new Map();
+    this.comments = new Map();
+    this.activityLogs = new Map();
+    this.users = new Map();
+    this.notifications = new Map();
+    this.workflowHistory = new Map();
+    this.savedViews = new Map();
+    this.exportJobs = new Map();
+    this.webhooks = new Map();
     this.seedData();
   }
 
@@ -944,6 +1017,202 @@ export class MemStorage implements IStorage {
       })),
       topVulnerabilities,
     };
+  }
+
+  // Comments
+  async getComments(vulnerabilityId: string): Promise<Comment[]> {
+    return Array.from(this.comments.values())
+      .filter((c) => c.vulnerabilityId === vulnerabilityId)
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  }
+
+  async createComment(comment: InsertComment): Promise<Comment> {
+    const id = randomUUID();
+    const newComment: Comment = {
+      ...comment,
+      id,
+      createdAt: new Date(),
+    };
+    this.comments.set(id, newComment);
+    return newComment;
+  }
+
+  // Activity Logs
+  async getActivityLogs(entityType: string, entityId: string): Promise<ActivityLog[]> {
+    return Array.from(this.activityLogs.values())
+      .filter((log) => log.entityType === entityType && log.entityId === entityId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async createActivityLog(log: InsertActivityLog): Promise<ActivityLog> {
+    const id = randomUUID();
+    const newLog: ActivityLog = {
+      ...log,
+      id,
+      createdAt: new Date(),
+    };
+    this.activityLogs.set(id, newLog);
+    return newLog;
+  }
+
+  // Users
+  async getUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+
+  async getUser(id: string): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find((u) => u.email === email);
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const id = randomUUID();
+    const newUser: User = {
+      ...user,
+      id,
+      createdAt: new Date(),
+    };
+    this.users.set(id, newUser);
+    return newUser;
+  }
+
+  async updateUser(id: string, user: Partial<User>): Promise<User | undefined> {
+    const existing = this.users.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...user };
+    this.users.set(id, updated);
+    return updated;
+  }
+
+  // Notifications
+  async getNotifications(userId: string): Promise<Notification[]> {
+    return Array.from(this.notifications.values())
+      .filter((n) => n.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const id = randomUUID();
+    const newNotification: Notification = {
+      ...notification,
+      id,
+      createdAt: new Date(),
+    };
+    this.notifications.set(id, newNotification);
+    return newNotification;
+  }
+
+  async markNotificationRead(id: string): Promise<void> {
+    const notification = this.notifications.get(id);
+    if (notification) {
+      notification.isRead = true;
+    }
+  }
+
+  // Workflow History
+  async getWorkflowHistory(vulnerabilityId: string): Promise<WorkflowHistory[]> {
+    return Array.from(this.workflowHistory.values())
+      .filter((h) => h.vulnerabilityId === vulnerabilityId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async createWorkflowHistory(history: InsertWorkflowHistory): Promise<WorkflowHistory> {
+    const id = randomUUID();
+    const newHistory: WorkflowHistory = {
+      ...history,
+      id,
+      createdAt: new Date(),
+    };
+    this.workflowHistory.set(id, newHistory);
+    return newHistory;
+  }
+
+  // Saved Views
+  async getSavedViews(vpOwner: string): Promise<SavedView[]> {
+    return Array.from(this.savedViews.values())
+      .filter((v) => v.vpOwner === vpOwner)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getSavedView(id: string): Promise<SavedView | undefined> {
+    return this.savedViews.get(id);
+  }
+
+  async createSavedView(view: InsertSavedView): Promise<SavedView> {
+    const id = randomUUID();
+    const newView: SavedView = {
+      ...view,
+      id,
+      createdAt: new Date(),
+    };
+    this.savedViews.set(id, newView);
+    return newView;
+  }
+
+  async updateSavedView(id: string, view: Partial<SavedView>): Promise<SavedView | undefined> {
+    const existing = this.savedViews.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...view };
+    this.savedViews.set(id, updated);
+    return updated;
+  }
+
+  async deleteSavedView(id: string): Promise<void> {
+    this.savedViews.delete(id);
+  }
+
+  // Export Jobs
+  async getExportJobs(userId: string): Promise<ExportJob[]> {
+    return Array.from(this.exportJobs.values())
+      .filter((j) => j.requestedBy === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async createExportJob(job: InsertExportJob): Promise<ExportJob> {
+    const id = randomUUID();
+    const newJob: ExportJob = {
+      ...job,
+      id,
+      createdAt: new Date(),
+      completedAt: null,
+    };
+    this.exportJobs.set(id, newJob);
+    return newJob;
+  }
+
+  async updateExportJob(id: string, job: Partial<ExportJob>): Promise<ExportJob | undefined> {
+    const existing = this.exportJobs.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...job };
+    this.exportJobs.set(id, updated);
+    return updated;
+  }
+
+  // Webhooks
+  async getWebhooks(): Promise<WebhookConfig[]> {
+    return Array.from(this.webhooks.values());
+  }
+
+  async createWebhook(webhook: InsertWebhookConfig): Promise<WebhookConfig> {
+    const id = randomUUID();
+    const newWebhook: WebhookConfig = {
+      ...webhook,
+      id,
+      createdAt: new Date(),
+    };
+    this.webhooks.set(id, newWebhook);
+    return newWebhook;
+  }
+
+  async updateWebhook(id: string, webhook: Partial<WebhookConfig>): Promise<WebhookConfig | undefined> {
+    const existing = this.webhooks.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...webhook };
+    this.webhooks.set(id, updated);
+    return updated;
   }
 }
 

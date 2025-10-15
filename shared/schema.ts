@@ -175,6 +175,110 @@ export const insertDashboardConfigSchema = createInsertSchema(dashboardConfigs).
   updatedAt: true,
 });
 
+// Activity Log Schema - for audit trail
+export const activityLogs = pgTable("activity_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  entityType: text("entity_type").notNull(), // "VULNERABILITY", "ASSET", "INTEGRATION"
+  entityId: text("entity_id").notNull(),
+  action: text("action").notNull(), // "CREATED", "UPDATED", "DELETED", "VIEWED", "ASSIGNED", "COMMENTED"
+  userId: text("user_id").notNull(),
+  userName: text("user_name").notNull(),
+  changes: jsonb("changes"), // What changed (before/after)
+  metadata: jsonb("metadata"), // Additional context
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Users Schema - for team member management and RBAC
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull().unique(),
+  name: text("name").notNull(),
+  role: text("role").notNull(), // "ADMIN", "VP", "SECURITY_ANALYST", "ENGINEER", "VIEWER"
+  vpOwner: text("vp_owner"), // If role is VP, which VP are they
+  team: text("team"),
+  avatarUrl: text("avatar_url"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Notifications Schema - for alerts and digests
+export const notifications = pgTable("notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").notNull(),
+  type: text("type").notNull(), // "SLA_BREACH", "NEW_CRITICAL", "ASSIGNMENT", "COMMENT_MENTION", "DIGEST"
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  vulnerabilityId: text("vulnerability_id"), // Reference to related vulnerability
+  isRead: boolean("is_read").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Workflow History Schema - track status changes
+export const workflowHistory = pgTable("workflow_history", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  vulnerabilityId: text("vulnerability_id").notNull(),
+  fromStatus: text("from_status"),
+  toStatus: text("to_status").notNull(),
+  changedBy: text("changed_by").notNull(),
+  comment: text("comment"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Export Jobs Schema - track report generation
+export const exportJobs = pgTable("export_jobs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  type: text("type").notNull(), // "CSV", "PDF", "COMPLIANCE_REPORT"
+  status: text("status").notNull(), // "PENDING", "PROCESSING", "COMPLETED", "FAILED"
+  filters: jsonb("filters"),
+  fileUrl: text("file_url"),
+  requestedBy: text("requested_by").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+// Webhook Configs Schema - for custom integrations
+export const webhookConfigs = pgTable("webhook_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  url: text("url").notNull(),
+  events: text("events").array().notNull(), // ["CRITICAL_VULN_DETECTED", "SLA_BREACH", "WORKFLOW_COMPLETE"]
+  secret: text("secret"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Insert Schemas for new tables
+export const insertActivityLogSchema = createInsertSchema(activityLogs).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertWorkflowHistorySchema = createInsertSchema(workflowHistory).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertExportJobSchema = createInsertSchema(exportJobs).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+export const insertWebhookConfigSchema = createInsertSchema(webhookConfigs).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type Vulnerability = typeof vulnerabilities.$inferSelect;
 export type InsertVulnerability = z.infer<typeof insertVulnerabilitySchema>;
@@ -196,6 +300,24 @@ export type InsertVpTrendHistory = z.infer<typeof insertVpTrendHistorySchema>;
 
 export type DashboardConfig = typeof dashboardConfigs.$inferSelect;
 export type InsertDashboardConfig = z.infer<typeof insertDashboardConfigSchema>;
+
+export type ActivityLog = typeof activityLogs.$inferSelect;
+export type InsertActivityLog = z.infer<typeof insertActivityLogSchema>;
+
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+
+export type WorkflowHistory = typeof workflowHistory.$inferSelect;
+export type InsertWorkflowHistory = z.infer<typeof insertWorkflowHistorySchema>;
+
+export type ExportJob = typeof exportJobs.$inferSelect;
+export type InsertExportJob = z.infer<typeof insertExportJobSchema>;
+
+export type WebhookConfig = typeof webhookConfigs.$inferSelect;
+export type InsertWebhookConfig = z.infer<typeof insertWebhookConfigSchema>;
 
 // Dashboard Stats Type
 export type DashboardStats = {
