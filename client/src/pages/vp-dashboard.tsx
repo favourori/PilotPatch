@@ -235,7 +235,7 @@ export default function VPDashboardPage() {
                                 <code className="text-sm font-mono font-semibold">
                                   {vuln.cveId}
                                 </code>
-                                <FindingTypeBadge findingType={vuln.findingType} />
+                                <FindingTypeBadge findingType={vuln.findingType as "CODE_VULNERABILITY" | "SECRET_EXPOSURE" | "CLOUD_SECURITY"} />
                                 <Badge
                                   variant="outline"
                                   className={getSeverityColor(vuln.severity)}
@@ -247,9 +247,11 @@ export default function VPDashboardPage() {
                               <p className="text-sm text-foreground mb-1 line-clamp-1">
                                 {vuln.title}
                               </p>
-                              <p className="text-xs text-muted-foreground">
-                                {vuln.affectedAsset}
-                              </p>
+                              {vuln.affectedPackage && (
+                                <p className="text-xs text-muted-foreground">
+                                  Package: {vuln.affectedPackage}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </CardContent>
