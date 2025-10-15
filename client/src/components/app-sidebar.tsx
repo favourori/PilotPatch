@@ -50,7 +50,7 @@ export function AppSidebar() {
             <Shield className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-sidebar-foreground">VIPR</h1>
+            <h1 className="text-lg font-bold text-sidebar-foreground">PatchPilot</h1>
             <p className="text-xs text-muted-foreground">Vulnerability Intelligence</p>
           </div>
         </div>

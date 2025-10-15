@@ -1,4 +1,4 @@
-# VIPR Security Dashboard - Design Guidelines
+# PatchPilot Security Dashboard - Design Guidelines
 
 ## Design Approach: Enterprise Security Platform
 

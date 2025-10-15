@@ -1,7 +1,7 @@
-# VIPR - Vulnerability Intelligence & Prioritization Platform
+# PatchPilot - Vulnerability Intelligence & Prioritization Platform
 
 ## Overview
-VIPR is a comprehensive security vulnerability management and prioritization platform that aggregates vulnerability data from multiple security tools, provides risk-based scoring, and enables efficient remediation workflows. Built as a clone of Armis VIPR, this application helps security teams prioritize and manage vulnerabilities across their entire attack surface.
+PatchPilot is a comprehensive security vulnerability management and prioritization platform that aggregates vulnerability data from multiple security tools, provides risk-based scoring, and enables efficient remediation workflows. Built as a clone of Armis VIPR, this application helps security teams prioritize and manage vulnerabilities across their entire attack surface.
 
 ## Current State
 The application is fully functional with:
