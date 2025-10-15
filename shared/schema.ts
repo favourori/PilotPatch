@@ -130,3 +130,24 @@ export type DashboardStats = {
     low: number;
   }[];
 };
+
+// VP Dashboard Types
+export type VPDashboard = {
+  vpName: string;
+  vpPoc: string;
+  totalVulnerabilities: number;
+  criticalCount: number;
+  highCount: number;
+  mediumCount: number;
+  lowCount: number;
+  totalAssets: number;
+  applications: {
+    id: string;
+    name: string;
+    type: string;
+    vulnerabilityCount: number;
+    criticalVulnCount: number;
+    highVulnCount: number;
+  }[];
+  topVulnerabilities: Vulnerability[];
+};

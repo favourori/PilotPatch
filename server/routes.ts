@@ -131,6 +131,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // VP Dashboard
+  app.get("/api/vp/list", async (_req, res) => {
+    try {
+      const vpList = await storage.getVPList();
+      res.json(vpList);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch VP list" });
+    }
+  });
+
+  app.get("/api/vp/dashboard/:vpOwner", async (req, res) => {
+    try {
+      const dashboard = await storage.getVPDashboard(decodeURIComponent(req.params.vpOwner));
+      if (!dashboard) {
+        return res.status(404).json({ error: "VP dashboard not found" });
+      }
+      res.json(dashboard);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch VP dashboard" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

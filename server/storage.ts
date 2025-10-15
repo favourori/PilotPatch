@@ -6,6 +6,7 @@ import {
   type Integration,
   type InsertIntegration,
   type DashboardStats,
+  type VPDashboard,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -30,6 +31,10 @@ export interface IStorage {
   
   // Dashboard
   getDashboardStats(): Promise<DashboardStats>;
+  
+  // VP Dashboard
+  getVPList(): Promise<{ vpName: string; vpPoc: string }[]>;
+  getVPDashboard(vpOwner: string): Promise<VPDashboard | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -825,6 +830,71 @@ export class MemStorage implements IStorage {
       highRiskAssets,
       activeIntegrations,
       trendData,
+    };
+  }
+
+  // VP Dashboard
+  async getVPList(): Promise<{ vpName: string; vpPoc: string }[]> {
+    const assets = await this.getAssets();
+    const vpMap = new Map<string, string>();
+    
+    assets.forEach((asset) => {
+      if (asset.vpOwner && asset.vpPoc) {
+        vpMap.set(asset.vpOwner, asset.vpPoc);
+      }
+    });
+
+    return Array.from(vpMap.entries()).map(([vpName, vpPoc]) => ({
+      vpName,
+      vpPoc,
+    }));
+  }
+
+  async getVPDashboard(vpOwner: string): Promise<VPDashboard | undefined> {
+    const allAssets = await this.getAssets();
+    const allVulns = await this.getVulnerabilities();
+
+    // Filter assets owned by this VP
+    const vpAssets = allAssets.filter((a) => a.vpOwner === vpOwner);
+    
+    if (vpAssets.length === 0) {
+      return undefined;
+    }
+
+    const vpPoc = vpAssets[0]?.vpPoc || "";
+    const assetIds = vpAssets.map((a) => a.id);
+
+    // Filter vulnerabilities for VP's assets
+    const vpVulns = allVulns.filter((v) => assetIds.includes(v.assetId));
+
+    const criticalCount = vpVulns.filter((v) => v.severity === "CRITICAL").length;
+    const highCount = vpVulns.filter((v) => v.severity === "HIGH").length;
+    const mediumCount = vpVulns.filter((v) => v.severity === "MEDIUM").length;
+    const lowCount = vpVulns.filter((v) => v.severity === "LOW").length;
+
+    // Get top 10 highest risk vulnerabilities
+    const topVulnerabilities = vpVulns
+      .sort((a, b) => b.riskScore - a.riskScore)
+      .slice(0, 10);
+
+    return {
+      vpName: vpOwner,
+      vpPoc,
+      totalVulnerabilities: vpVulns.length,
+      criticalCount,
+      highCount,
+      mediumCount,
+      lowCount,
+      totalAssets: vpAssets.length,
+      applications: vpAssets.map((asset) => ({
+        id: asset.id,
+        name: asset.name,
+        type: asset.type,
+        vulnerabilityCount: asset.vulnerabilityCount,
+        criticalVulnCount: asset.criticalVulnCount,
+        highVulnCount: asset.highVulnCount,
+      })),
+      topVulnerabilities,
     };
   }
 }
