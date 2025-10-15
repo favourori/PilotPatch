@@ -18,6 +18,28 @@ export const vulnerabilities = pgTable("vulnerabilities", {
   sourceIntegration: text("source_integration").notNull(), // "SNYK", "GITLEAKS", "SERVICENOW", etc
   affectedPackage: text("affected_package"),
   remediationSteps: text("remediation_steps"),
+  
+  // Enrichment fields
+  applicationOwner: text("application_owner"),
+  githubUrl: text("github_url"),
+  ticketUrl: text("ticket_url"),
+  attackVector: text("attack_vector"), // "NETWORK", "ADJACENT", "LOCAL", "PHYSICAL"
+  attackComplexity: text("attack_complexity"), // "LOW", "HIGH"
+  privilegesRequired: text("privileges_required"), // "NONE", "LOW", "HIGH"
+  userInteraction: text("user_interaction"), // "NONE", "REQUIRED"
+  confidentialityImpact: text("confidentiality_impact"), // "NONE", "LOW", "HIGH"
+  integrityImpact: text("integrity_impact"), // "NONE", "LOW", "HIGH"
+  availabilityImpact: text("availability_impact"), // "NONE", "LOW", "HIGH"
+  epssScore: text("epss_score"), // Exploit Prediction Scoring System
+  knownExploits: text("known_exploits").array(),
+  relatedCves: text("related_cves").array(),
+  references: text("references").array(),
+  complianceImpact: text("compliance_impact").array(), // ["PCI-DSS", "HIPAA", "SOC2"]
+  patchAvailable: boolean("patch_available"),
+  patchVersion: text("patch_version"),
+  discoveryDate: timestamp("discovery_date"),
+  publicationDate: timestamp("publication_date"),
+  
   detectedAt: timestamp("detected_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
