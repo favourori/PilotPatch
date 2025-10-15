@@ -1,4 +1,4 @@
-import { Home, Shield, Server, Plug, AlertTriangle } from "lucide-react";
+import { Home, Shield, Server, Plug, AlertTriangle, Users } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
   Sidebar,
@@ -18,6 +18,12 @@ const menuItems = [
     url: "/",
     icon: Home,
     testId: "link-dashboard",
+  },
+  {
+    title: "VP Dashboard",
+    url: "/vp-dashboard",
+    icon: Users,
+    testId: "link-vp-dashboard",
   },
   {
     title: "Vulnerabilities",

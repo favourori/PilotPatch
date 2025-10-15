@@ -12,6 +12,7 @@ import Vulnerabilities from "@/pages/vulnerabilities";
 import VulnerabilityDetail from "@/pages/vulnerability-detail";
 import Assets from "@/pages/assets";
 import Integrations from "@/pages/integrations";
+import VPDashboard from "@/pages/vp-dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/vulnerabilities/:id" component={VulnerabilityDetail} />
       <Route path="/assets" component={Assets} />
       <Route path="/integrations" component={Integrations} />
+      <Route path="/vp-dashboard" component={VPDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
