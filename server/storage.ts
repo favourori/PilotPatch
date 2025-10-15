@@ -665,6 +665,13 @@ export class MemStorage implements IStorage {
         patchVersion: vuln.patchVersion || null,
         discoveryDate: vuln.discoveryDate || null,
         publicationDate: vuln.publicationDate || null,
+        workflowStatus: null,
+        assignedTo: null,
+        assignedTeam: null,
+        slaDueDate: null,
+        slaStatus: null,
+        estimatedCost: null,
+        estimatedHours: null,
         detectedAt: new Date(Date.now() - Math.random() * 7 * 24 * 3600000),
         updatedAt: new Date(),
       });
@@ -728,6 +735,13 @@ export class MemStorage implements IStorage {
       patchVersion: vuln.patchVersion || null,
       discoveryDate: vuln.discoveryDate || null,
       publicationDate: vuln.publicationDate || null,
+      workflowStatus: vuln.workflowStatus || null,
+      assignedTo: vuln.assignedTo || null,
+      assignedTeam: vuln.assignedTeam || null,
+      slaDueDate: vuln.slaDueDate || null,
+      slaStatus: vuln.slaStatus || null,
+      estimatedCost: vuln.estimatedCost || null,
+      estimatedHours: vuln.estimatedHours || null,
       detectedAt: new Date(),
       updatedAt: new Date(),
     };
@@ -762,6 +776,8 @@ export class MemStorage implements IStorage {
       ...asset,
       id,
       owner: asset.owner || null,
+      vpOwner: asset.vpOwner || null,
+      vpPoc: asset.vpPoc || null,
       ipAddress: asset.ipAddress || null,
       vulnerabilityCount: 0,
       criticalVulnCount: 0,
@@ -897,7 +913,7 @@ export class MemStorage implements IStorage {
     const assetIds = vpAssets.map((a) => a.id);
 
     // Filter vulnerabilities for VP's assets
-    const vpVulns = allVulns.filter((v) => assetIds.includes(v.assetId));
+    const vpVulns = allVulns.filter((v) => v.assetIds.some(aid => assetIds.includes(aid)));
 
     const criticalCount = vpVulns.filter((v) => v.severity === "CRITICAL").length;
     const highCount = vpVulns.filter((v) => v.severity === "HIGH").length;
