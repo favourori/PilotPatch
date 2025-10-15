@@ -16,6 +16,7 @@ export const vulnerabilities = pgTable("vulnerabilities", {
   status: text("status").notNull(), // "OPEN", "IN_PROGRESS", "RESOLVED", "ACCEPTED"
   assetIds: text("asset_ids").array().notNull(),
   sourceIntegration: text("source_integration").notNull(), // "SNYK", "GITLEAKS", "SERVICENOW", etc
+  findingType: text("finding_type").notNull(), // "CODE_VULNERABILITY", "SECRET_EXPOSURE", "CLOUD_SECURITY"
   affectedPackage: text("affected_package"),
   remediationSteps: text("remediation_steps"),
   

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { SeverityBadge } from "@/components/severity-badge";
 import { StatusBadge } from "@/components/status-badge";
+import { FindingTypeBadge } from "@/components/finding-type-badge";
 import { Search, ArrowUpDown } from "lucide-react";
 import type { Vulnerability } from "@shared/schema";
 
@@ -27,6 +28,7 @@ export default function Vulnerabilities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [severityFilter, setSeverityFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [findingTypeFilter, setFindingTypeFilter] = useState<string>("ALL");
 
   const { data: vulnerabilities, isLoading } = useQuery<Vulnerability[]>({
     queryKey: ["/api/vulnerabilities"],
@@ -39,8 +41,10 @@ export default function Vulnerabilities() {
     const matchesSeverity =
       severityFilter === "ALL" || vuln.severity === severityFilter;
     const matchesStatus = statusFilter === "ALL" || vuln.status === statusFilter;
+    const matchesFindingType =
+      findingTypeFilter === "ALL" || vuln.findingType === findingTypeFilter;
 
-    return matchesSearch && matchesSeverity && matchesStatus;
+    return matchesSearch && matchesSeverity && matchesStatus && matchesFindingType;
   });
 
   if (isLoading) {
@@ -95,6 +99,17 @@ export default function Vulnerabilities() {
             <SelectItem value="ACCEPTED">Accepted</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={findingTypeFilter} onValueChange={setFindingTypeFilter}>
+          <SelectTrigger className="w-[200px]" data-testid="select-finding-type-filter">
+            <SelectValue placeholder="Filter by type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">All Types</SelectItem>
+            <SelectItem value="CODE_VULNERABILITY">Code Vulnerabilities</SelectItem>
+            <SelectItem value="SECRET_EXPOSURE">Secret Exposures</SelectItem>
+            <SelectItem value="CLOUD_SECURITY">Cloud Security</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="rounded-lg border border-card-border bg-card">
@@ -109,6 +124,7 @@ export default function Vulnerabilities() {
               </TableHead>
               <TableHead>CVE ID</TableHead>
               <TableHead>Title</TableHead>
+              <TableHead>Type</TableHead>
               <TableHead>Severity</TableHead>
               <TableHead>CVSS</TableHead>
               <TableHead>Status</TableHead>
@@ -145,6 +161,11 @@ export default function Vulnerabilities() {
                     {vuln.title}
                   </TableCell>
                   <TableCell>
+                    <FindingTypeBadge
+                      findingType={vuln.findingType as "CODE_VULNERABILITY" | "SECRET_EXPOSURE" | "CLOUD_SECURITY"}
+                    />
+                  </TableCell>
+                  <TableCell>
                     <SeverityBadge
                       severity={vuln.severity as "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"}
                     />
@@ -171,7 +192,7 @@ export default function Vulnerabilities() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={8} className="h-24 text-center">
+                <TableCell colSpan={9} className="h-24 text-center">
                   <div className="text-muted-foreground">
                     No vulnerabilities found. Try adjusting your filters.
                   </div>

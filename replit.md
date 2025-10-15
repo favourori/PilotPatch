@@ -10,6 +10,7 @@ The application is fully functional with:
 - **Asset Inventory** - Track all infrastructure assets with vulnerability mapping
 - **Integration Hub** - Connect and manage security tool integrations
 - **Risk Scoring Engine** - Custom risk scores based on CVSS, exploitability, and business context
+- **Finding Types** - Support for Code Vulnerabilities, Secret Exposures, and Cloud Security findings
 - **Dark/Light Theme** - Full theme support with persistent preferences
 
 ## Project Architecture
@@ -29,9 +30,10 @@ The application is fully functional with:
 - **RESTful API** architecture
 
 ### Data Models
-1. **Vulnerabilities** - CVE tracking with severity, risk scores, status, and remediation steps
+1. **Vulnerabilities** - CVE tracking with severity, risk scores, status, finding types, and remediation steps
+   - **Finding Types**: CODE_VULNERABILITY, SECRET_EXPOSURE, CLOUD_SECURITY
 2. **Assets** - Infrastructure inventory with business criticality and vulnerability counts
-3. **Integrations** - Security tool connections (Snyk, ServiceNow, Gitleaks, etc.)
+3. **Integrations** - Security tool connections (Snyk, ServiceNow, Gitleaks, Wiz, etc.)
 4. **Dashboard Stats** - Aggregated metrics and trend data
 
 ## Key Features
@@ -47,13 +49,18 @@ The application is fully functional with:
 
 ### 2. Vulnerability Management
 - Risk-based prioritization (0-100 score)
-- Multi-criteria filtering (severity, status, source)
+- Multi-criteria filtering (severity, status, source, finding type)
 - Real-time search across CVE IDs and titles
+- Finding type categorization:
+  - **Code Vulnerabilities** - Traditional code security issues from Snyk, GitHub, SonarQube
+  - **Secret Exposures** - Leaked credentials and API keys from Gitleaks
+  - **Cloud Security** - Cloud misconfigurations and IAM issues from Wiz
 - Detailed vulnerability views with:
   - CVSS scores and exploitability data
   - Affected assets mapping
   - Step-by-step remediation guidance
   - Source integration tracking
+  - Comprehensive enrichment data (30+ fields)
 
 ### 3. Asset Inventory
 - Comprehensive asset tracking across environments
@@ -99,9 +106,12 @@ The application is fully functional with:
 
 ## Sample Data
 The application is pre-seeded with realistic security data:
-- **8 Vulnerabilities** across all severity levels with real CVE scenarios
-- **5 Assets** including production servers, databases, and applications
-- **4 Integrations** (3 connected, 1 disconnected)
+- **15 Security Findings** across all severity levels and finding types:
+  - 8 Code Vulnerabilities (CVE-based)
+  - 3 Secret Exposures (Gitleaks findings)
+  - 4 Cloud Security Issues (Wiz findings)
+- **5 Assets** including production servers, databases, and cloud resources
+- **4 Integrations** (3 connected, 1 disconnected) - Snyk, ServiceNow, Gitleaks, Qualys
 - **Trend data** showing vulnerability progression over 7 days
 
 ## Design Guidelines
@@ -172,6 +182,10 @@ The application runs on port 5000 with:
 - Complete frontend with dashboard, vulnerabilities, assets, and integrations
 - Backend API with seeded realistic security data
 - Theme support with dark/light mode
+- Added comprehensive vulnerability enrichment (30+ fields including ownership, GitHub URLs, attack vectors, EPSS scores, compliance impact)
+- Implemented finding type classification: Code Vulnerabilities, Secret Exposures, Cloud Security
+- Added sample data for different finding types from Snyk, Gitleaks, and Wiz integrations
+- Enhanced vulnerability detail page with all enrichment data
 - Comprehensive testing coverage
 
 ## Notes
