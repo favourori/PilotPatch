@@ -1031,6 +1031,7 @@ export class MemStorage implements IStorage {
     const newComment: Comment = {
       ...comment,
       id,
+      parentCommentId: comment.parentCommentId || null,
       createdAt: new Date(),
     };
     this.comments.set(id, newComment);
@@ -1049,6 +1050,8 @@ export class MemStorage implements IStorage {
     const newLog: ActivityLog = {
       ...log,
       id,
+      changes: log.changes || null,
+      metadata: log.metadata || null,
       createdAt: new Date(),
     };
     this.activityLogs.set(id, newLog);
@@ -1073,6 +1076,10 @@ export class MemStorage implements IStorage {
     const newUser: User = {
       ...user,
       id,
+      vpOwner: user.vpOwner || null,
+      team: user.team || null,
+      avatarUrl: user.avatarUrl || null,
+      isActive: user.isActive ?? true,
       createdAt: new Date(),
     };
     this.users.set(id, newUser);
@@ -1099,6 +1106,8 @@ export class MemStorage implements IStorage {
     const newNotification: Notification = {
       ...notification,
       id,
+      vulnerabilityId: notification.vulnerabilityId || null,
+      isRead: notification.isRead ?? false,
       createdAt: new Date(),
     };
     this.notifications.set(id, newNotification);
@@ -1124,6 +1133,8 @@ export class MemStorage implements IStorage {
     const newHistory: WorkflowHistory = {
       ...history,
       id,
+      fromStatus: history.fromStatus || null,
+      comment: history.comment || null,
       createdAt: new Date(),
     };
     this.workflowHistory.set(id, newHistory);
@@ -1146,6 +1157,7 @@ export class MemStorage implements IStorage {
     const newView: SavedView = {
       ...view,
       id,
+      isDefault: view.isDefault ?? false,
       createdAt: new Date(),
     };
     this.savedViews.set(id, newView);
@@ -1176,6 +1188,8 @@ export class MemStorage implements IStorage {
     const newJob: ExportJob = {
       ...job,
       id,
+      filters: job.filters || null,
+      fileUrl: job.fileUrl || null,
       createdAt: new Date(),
       completedAt: null,
     };
@@ -1201,6 +1215,8 @@ export class MemStorage implements IStorage {
     const newWebhook: WebhookConfig = {
       ...webhook,
       id,
+      secret: webhook.secret || null,
+      isActive: webhook.isActive ?? true,
       createdAt: new Date(),
     };
     this.webhooks.set(id, newWebhook);
