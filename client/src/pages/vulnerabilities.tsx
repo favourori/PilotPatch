@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import {
   Table,
   TableBody,
@@ -25,6 +25,7 @@ import { Search, ArrowUpDown } from "lucide-react";
 import type { Vulnerability } from "@shared/schema";
 
 export default function Vulnerabilities() {
+  const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [severityFilter, setSeverityFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -138,6 +139,7 @@ export default function Vulnerabilities() {
                 <TableRow
                   key={vuln.id}
                   className="hover-elevate cursor-pointer"
+                  onClick={() => setLocation(`/vulnerabilities/${vuln.id}`)}
                   data-testid={`row-vulnerability-${vuln.id}`}
                 >
                   <TableCell>
@@ -151,11 +153,9 @@ export default function Vulnerabilities() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Link href={`/vulnerabilities/${vuln.id}`}>
-                      <code className="rounded bg-muted px-2 py-1 text-xs font-mono hover-elevate">
-                        {vuln.cveId}
-                      </code>
-                    </Link>
+                    <code className="rounded bg-muted px-2 py-1 text-xs font-mono">
+                      {vuln.cveId}
+                    </code>
                   </TableCell>
                   <TableCell className="max-w-md truncate font-medium">
                     {vuln.title}
