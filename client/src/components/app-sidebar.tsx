@@ -1,4 +1,4 @@
-import { Home, Shield, Server, Plug, AlertTriangle, Users } from "lucide-react";
+import { Home, Shield, Server, Plug, AlertTriangle, Users, FileText } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
   Sidebar,
@@ -42,6 +42,12 @@ const menuItems = [
     url: "/integrations",
     icon: Plug,
     testId: "link-integrations",
+  },
+  {
+    title: "Reports",
+    url: "/reports",
+    icon: FileText,
+    testId: "link-reports",
   },
 ];
 
