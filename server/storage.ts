@@ -193,20 +193,13 @@ export class MemStorage implements IStorage {
 
     // Seed integrations
     const integrationData: InsertIntegration[] = [
+      // Code Analysis & SAST Tools
       {
         name: "Snyk",
         type: "CODE_SCANNER",
         status: "CONNECTED",
         apiUrl: "https://api.snyk.io",
         syncFrequency: "DAILY",
-        enabled: true,
-      },
-      {
-        name: "ServiceNow",
-        type: "TICKETING",
-        status: "CONNECTED",
-        apiUrl: "https://dev.service-now.com",
-        syncFrequency: "MANUAL",
         enabled: true,
       },
       {
@@ -218,10 +211,310 @@ export class MemStorage implements IStorage {
         enabled: true,
       },
       {
+        name: "SonarQube",
+        type: "CODE_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://sonarcloud.io",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "Checkmarx",
+        type: "CODE_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://api.checkmarx.com",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "Veracode",
+        type: "CODE_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://api.veracode.com",
+        syncFrequency: "WEEKLY",
+        enabled: true,
+      },
+      {
+        name: "Fortify",
+        type: "CODE_SCANNER",
+        status: "DISCONNECTED",
+        apiUrl: "https://fortify.microfocus.com",
+        enabled: false,
+      },
+      
+      // Vulnerability Scanners
+      {
         name: "Qualys",
         type: "VULN_SCANNER",
-        status: "DISCONNECTED",
+        status: "CONNECTED",
         apiUrl: "https://qualysapi.qualys.com",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "Nessus",
+        type: "VULN_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://cloud.tenable.com",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "Rapid7 InsightVM",
+        type: "VULN_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://us.api.insight.rapid7.com",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "OpenVAS",
+        type: "VULN_SCANNER",
+        status: "DISCONNECTED",
+        apiUrl: "https://openvas.org",
+        enabled: false,
+      },
+      
+      // Cloud Security Platforms
+      {
+        name: "Wiz",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.wiz.io",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "Prisma Cloud",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.prismacloud.io",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "Aqua Security",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.aquasec.com",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "Lacework",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.lacework.net",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "Orca Security",
+        type: "CLOUD_SECURITY",
+        status: "DISCONNECTED",
+        apiUrl: "https://api.orca.security",
+        enabled: false,
+      },
+      
+      // Secret Scanning
+      {
+        name: "GitGuardian",
+        type: "CODE_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://api.gitguardian.com",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "TruffleHog",
+        type: "CODE_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://github.com",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      
+      // DAST & API Security
+      {
+        name: "OWASP ZAP",
+        type: "VULN_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://www.zaproxy.org",
+        syncFrequency: "WEEKLY",
+        enabled: true,
+      },
+      {
+        name: "Burp Suite Enterprise",
+        type: "VULN_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://enterprise.portswigger.net",
+        syncFrequency: "WEEKLY",
+        enabled: true,
+      },
+      {
+        name: "Acunetix",
+        type: "VULN_SCANNER",
+        status: "DISCONNECTED",
+        apiUrl: "https://acunetix.com",
+        enabled: false,
+      },
+      {
+        name: "Salt Security",
+        type: "VULN_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://api.salt.security",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "42Crunch",
+        type: "CODE_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://api.42crunch.com",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      
+      // Container & Kubernetes Security
+      {
+        name: "Trivy",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://github.com/aquasecurity/trivy",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "Falco",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://falco.org",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "Sysdig",
+        type: "CLOUD_SECURITY",
+        status: "DISCONNECTED",
+        apiUrl: "https://api.sysdigcloud.com",
+        enabled: false,
+      },
+      
+      // SIEM & Threat Detection
+      {
+        name: "Splunk",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.splunk.com",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "CrowdStrike",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.crowdstrike.com",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      {
+        name: "Datadog Security",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.datadoghq.com",
+        syncFrequency: "HOURLY",
+        enabled: true,
+      },
+      
+      // Compliance & GRC
+      {
+        name: "Vanta",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.vanta.com",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "Drata",
+        type: "CLOUD_SECURITY",
+        status: "CONNECTED",
+        apiUrl: "https://api.drata.com",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "Secureframe",
+        type: "CLOUD_SECURITY",
+        status: "DISCONNECTED",
+        apiUrl: "https://api.secureframe.com",
+        enabled: false,
+      },
+      
+      // Dependency Scanning
+      {
+        name: "Dependabot",
+        type: "CODE_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://github.com",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "WhiteSource (Mend)",
+        type: "CODE_SCANNER",
+        status: "CONNECTED",
+        apiUrl: "https://api.mend.io",
+        syncFrequency: "DAILY",
+        enabled: true,
+      },
+      {
+        name: "JFrog Xray",
+        type: "CODE_SCANNER",
+        status: "DISCONNECTED",
+        apiUrl: "https://xray.jfrog.io",
+        enabled: false,
+      },
+      
+      // Ticketing & Workflow
+      {
+        name: "ServiceNow",
+        type: "TICKETING",
+        status: "CONNECTED",
+        apiUrl: "https://dev.service-now.com",
+        syncFrequency: "MANUAL",
+        enabled: true,
+      },
+      {
+        name: "Jira",
+        type: "TICKETING",
+        status: "CONNECTED",
+        apiUrl: "https://api.atlassian.com",
+        syncFrequency: "MANUAL",
+        enabled: true,
+      },
+      {
+        name: "PagerDuty",
+        type: "TICKETING",
+        status: "CONNECTED",
+        apiUrl: "https://api.pagerduty.com",
+        syncFrequency: "MANUAL",
+        enabled: true,
+      },
+      
+      // Penetration Testing
+      {
+        name: "Metasploit",
+        type: "VULN_SCANNER",
+        status: "DISCONNECTED",
+        apiUrl: "https://www.metasploit.com",
+        enabled: false,
+      },
+      {
+        name: "Cobalt Strike",
+        type: "VULN_SCANNER",
+        status: "DISCONNECTED",
+        apiUrl: "https://www.cobaltstrike.com",
         enabled: false,
       },
     ];
